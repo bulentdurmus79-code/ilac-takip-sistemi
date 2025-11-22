@@ -1,4 +1,4 @@
-import { google } from 'googleapis';
+import { google } from '@googleapis/calendar';
 
 export class CalendarService {
   private static instance: CalendarService;
