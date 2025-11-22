@@ -1,18 +1,11 @@
 {
-  "version": 2,
   "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
+  "installCommand": "npm install",
   "functions": {
     "src/app/api/**/*.ts": {
-      "runtime": "@vercel/node"
+      "runtime": "nodejs18.x"
     }
   },
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -34,10 +27,6 @@
     {
       "source": "/api/(.*)",
       "headers": [
-        {
-          "key": "X-Rate-Limit",
-          "value": "100"
-        },
         {
           "key": "Cache-Control",
           "value": "no-cache, no-store, must-revalidate"
