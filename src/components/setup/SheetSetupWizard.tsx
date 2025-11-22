@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 
-// BU ID'Yİ ASIL TEMPLATE SPREADSHEET İLE DEĞIŞTIRIN
-const TEMPLATE_SPREADSHEET_ID = '1tg9abGAbGdFUHqOJLNoiVhfbmCc3Z4NkXn0KgsC2PLfI'; // Replace with actual template ID
+// TEMPLATE SPREADSHEET ID - Production Ready
+const TEMPLATE_SPREADSHEET_ID = '1WbVbQknd59wUWk-EEc-ChClWxgpKfefguscM89OB2Xs'; // Actual template sheet
 
 export function SheetSetupWizard() {
   const [isCreating, setIsCreating] = useState(false);
