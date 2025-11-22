@@ -45,7 +45,9 @@ class IndexedDBService {
   private dbPromise!: Promise<IDBPDatabase<MedicationTrackerDB>>;
 
   constructor() {
-    this.initDB();
+    if (typeof window !== 'undefined') {
+      this.initDB();
+    }
   }
 
   private initDB() {
