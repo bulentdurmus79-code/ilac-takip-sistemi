@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
 
     // Check if profile exists first
     const profileRows = await sheetsService.readSheet(spreadsheetId, 'kullanici', session.accessToken);
-    const existingProfileIndex = profileRows.findIndex((row, index) => index > 0 && row[0] === userEmail);
+    const existingProfileIndex = profileRows.findIndex((row: string[], index: number) => index > 0 && row[0] === userEmail);
 
     const profileData: KullaniciSheetData = {
       kullanici_email: userEmail,
