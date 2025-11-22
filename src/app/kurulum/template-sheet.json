@@ -1,0 +1,61 @@
+{
+  "template": {
+    "name": "İlaç Takip Sistemi - Kişisel Kullanım",
+    "description": "İlaç takip için özelleştirilmiş Google Sheets şablonu",
+    "force_copy_url": "https://docs.google.com/spreadsheets/d/[SPREADSHEET_ID]/copy",
+
+    "sheets": [
+      {
+        "name": "kullanici",
+        "headers": [
+          "kullanici_email",
+          "isim",
+          "soyisim",
+          "cinsiyet",
+          "yas",
+          "hastaliklar",
+          "api_key_area",
+          "olusturma_tarihi"
+        ],
+        "sample_data": [
+          ["kullanici@gmail.com", "Ahmet", "Yılmaz", "Erkek", "65", "Hipertansiyon, Diyabet", "", "2024-11-22"]
+        ]
+      },
+      {
+        "name": "ilaclar",
+        "headers": [
+          "ilac_id",
+          "ilac_adi",
+          "doz",
+          "birim",
+          "zamanlar",
+          "stok",
+          "foto_url",
+          "kullanici_email",
+          "aktif",
+          "olusturma_tarih"
+        ],
+        "sample_data": [
+          ["ilac-1", "Aspirin 100mg", "1", "tb", "08:30,20:00", "30", "", "kullanici@gmail.com", "TRUE", "2024-11-22"]
+        ]
+      },
+      {
+        "name": "ilac_gecmis",
+        "headers": [
+          "kayit_id",
+          "ilac_id",
+          "tarih",
+          "saat",
+          "durum",
+          "erteleme_dk",
+          "not",
+          "sync",
+          "timestamp"
+        ],
+        "sample_data": [
+          ["kg-1", "ilac-1", "2024-11-22", "08:35", "alindi", "", "", "TRUE", "1732262700"]
+        ]
+      }
+    ]
+  }
+}
