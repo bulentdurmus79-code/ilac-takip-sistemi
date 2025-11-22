@@ -1,4 +1,4 @@
-import { google } from '@googleapis/sheets';
+import { google } from 'googleapis';
 import { IlacSheetData, IlacGecmisSheetData } from '@/types/sheets';
 
 export class SheetsService {
