@@ -22,6 +22,13 @@ export const authOptions: NextAuthOptions = {
       session.accessToken = token.accessToken;
       return session;
     },
+    async redirect({ url, baseUrl }: any) {
+      // Successful login sonrası dashboard'a yönlendir
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // External URL'e gitmeye çalışırsa ana sayfaya yönlendir
+      if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    },
   },
   session: {
     strategy: 'jwt',
