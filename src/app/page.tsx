@@ -21,16 +21,29 @@ export default function HomePage() {
       return;
     }
 
-    // Check if user has completed profile setup
-    const checkProfile = async () => {
+    // 🚨KVKK KONTROLÜ: Önce her kullanıcının kendi sheet'i olmalı
+    const checkUserSetup = async () => {
       try {
-        const response = await fetch('/api/profil');
-        const data = await response.json();
-        if (!data.profile) {
+        // Profil kontrol et
+        const profileResponse = await fetch('/api/profil');
+        const profileData = await profileResponse.json();
+
+        // Eğer profile varsa, tamfulfilled setup mı kontrol et
+        if (profileData.profile) {
+          // Sheet ID kontrolü - eğer eksikse kurulum sayfasına yönlendir
+          if (!profileData.profile.sheet_id) {
+            router.push('/kurulum');
+            return;
+          }
+        } else {
+          // Profil yok - önce profil oluşturması lazım
           router.push('/profil');
+          return;
         }
       } catch (error) {
-        console.error('Profile check failed:', error);
+        console.error('Setup check failed:', error);
+        // Hata durumunda profil sayfasına git
+        router.push('/profil');
       }
     };
 
@@ -77,7 +90,7 @@ export default function HomePage() {
       }
     };
 
-    checkProfile();
+    checkUserSetup();
     loadSmartSuggestions();
 
     // Check every 30 minutes for new suggestions
