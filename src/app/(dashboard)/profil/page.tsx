@@ -3,9 +3,8 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { ProfileForm } from '@/components/user/ProfileForm';
-import { SheetSetupWizard } from '@/components/setup/SheetSetupWizard';
-import { KullaniciSheetData } from '@/types/sheets';
+import { ProfileForm } from '../../../components/user/ProfileForm';
+import { KullaniciSheetData } from '../../../types/sheets';
 
 export default function ProfilPage() {
   const { data: session, status } = useSession();
@@ -101,7 +100,7 @@ export default function ProfilPage() {
           </p>
           <button
             onClick={() => router.push('/kurulum')}
-            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg font-semibold"
+            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg font-md font-semibold"
           >
             Google Sheets Kurulumu Yap
           </button>
