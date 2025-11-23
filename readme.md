@@ -491,3 +491,4 @@ npm run build
 ---
 
 **NOT:** Her modülü tamamladıktan sonra bir sonraki modüle geçmeden önce test et ve çalıştığından emin ol. Modüler yapı sayesinde her parça bağımsız geliştirilebilir.
+
