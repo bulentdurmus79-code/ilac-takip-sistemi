@@ -4,13 +4,14 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 
 interface ProfileFormProps {
-  onSubmit: (data: {
-    isim: string;
-    soyisim: string;
-    cinsiyet: string;
-    yas: number;
-    hastaliklar: string;
-  }) => void;
+onSubmit: (data: {
+  isim: string;
+  soyisim: string;
+  cinsiyet: string;
+  yas: number;
+  hastaliklar: string;
+  sheet_id?: string;
+}) => void;
   onCancel?: () => void;
   initialData?: Partial<{
     isim: string;

@@ -68,6 +68,7 @@ export interface KullaniciSheetData {
   cinsiyet: string;
   yas: number;
   hastaliklar: string;
+  sheet_id: string; // User's personal Google Sheets ID
   api_key_area: string; // User's personal API key storage
   olusturma_tarihi: string;
 }

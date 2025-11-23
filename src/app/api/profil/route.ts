@@ -31,8 +31,9 @@ export async function GET(request: NextRequest) {
         cinsiyet: userProfile[3],
         yas: parseInt(userProfile[4] || '65'),
         hastaliklar: userProfile[5],
-        api_key_area: userProfile[6] || '',
-        olusturma_tarihi: userProfile[7],
+        sheet_id: userProfile[6] || '', // Personal spreadsheet ID
+        api_key_area: userProfile[7] || '',
+        olusturma_tarihi: userProfile[8],
       };
 
       return NextResponse.json({ profile });
@@ -59,12 +60,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Spreadsheet not configured' }, { status: 500 });
     }
 
-    const { isim, soyisim, cinsiyet, yas, hastaliklar }: {
+    const { isim, soyisim, cinsiyet, yas, hastaliklar, sheet_id }: {
       isim: string;
       soyisim: string;
       cinsiyet: string;
       yas: number;
       hastaliklar: string;
+      sheet_id?: string;
     } = await request.json();
 
     // Validate required fields
@@ -83,7 +85,8 @@ export async function POST(request: NextRequest) {
       cinsiyet,
       yas,
       hastaliklar,
-      api_key_area: '', // Can be filled later by user
+      sheet_id: sheet_id || '', // Store personal spreadsheet ID
+      api_key_area: '',
       olusturma_tarihi: new Date().toISOString().split('T')[0],
     };
 
@@ -92,7 +95,7 @@ export async function POST(request: NextRequest) {
       // For now, we'll append as a new row (simplified approach)
     }
 
-    // Add/Update profile in Google Sheets
+    // Add/Update profile in Google Sheets (now 9 columns)
     const data = [[
       profileData.kullanici_email,
       profileData.isim,
@@ -100,6 +103,7 @@ export async function POST(request: NextRequest) {
       profileData.cinsiyet,
       profileData.yas.toString(),
       profileData.hastaliklar,
+      profileData.sheet_id,
       profileData.api_key_area,
       profileData.olusturma_tarihi,
     ]];
