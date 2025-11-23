@@ -21,30 +21,27 @@ export default function HomePage() {
       return;
     }
 
-    // 🚨KVKK MANDATORY: Her kullanıcı kendi sheet'i oluşturmalı
+    // 🚨KVKK FIRST: Önce HER kullanıcı kendi sheet'ini kurmalı
     const checkUserSetup = async () => {
       try {
-        // Profil kontrol et
-        const profileResponse = await fetch('/api/profil');
-        const profileData = await profileResponse.json();
+        const response = await fetch('/api/profil');
+        const profileData = await response.json();
 
-        // Profil varsa ancak sheet_id yoksa -> /kurulum zorunlu
-        if (profileData.profile && !profileData.profile.sheet_id) {
+        // ✅ Eğer profil VAR ve sheet_id de VAR → TAMAM, ana sayfaya devam
+        if (profileData.profile && profileData.profile.sheet_id) {
+          return; // Ana sayfaya devam et
+        }
+
+        // ❌ Sheet ID yoksa → /kurulum zorunlu (profil sonra dolsurulur)
+        if (!profileData.profile || !profileData.profile.sheet_id) {
           router.push('/kurulum');
           return;
         }
 
-        // Profilเอง yoksa -> ilk olarak profil sayfası
-        if (!profileData.profile) {
-          router.push('/profil');
-          return;
-        }
-
-        // Her şey tamam -> ana sayfa devam et
       } catch (error) {
         console.error('Setup check failed:', error);
-        // Hata durumunda güvenlik için profile sayfasından başlat
-        router.push('/profil');
+        // Hata durumunda kurulum sayfasından başlat (safe option)
+        router.push('/kurulum');
       }
     };
 
