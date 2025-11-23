@@ -28,6 +28,11 @@ export default function ProfilPage() {
           const data = await response.json();
           if (data.profile) {
             setExistingProfile(data.profile);
+            // 🚨KVKK CONTROL: Eğer profil var ama sheet_id yoksa kurulum zorunlu
+            if (!data.profile.sheet_id) {
+              router.push('/kurulum');
+              return;
+            }
           }
         }
       } catch (error) {
@@ -92,8 +97,14 @@ export default function ProfilPage() {
           <h2 className="text-4xl font-bold text-green-600 mb-4">Profil Kaydedildi!</h2>
           <p className="text-2xl text-gray-700 mb-4">{successMessage}</p>
           <p className="text-lg text-gray-600">
-            Şimdi Google Sheets kurulumu yapabilirsiniz.
+            Artık sistem kurulumuna hazırsınız!
           </p>
+          <button
+            onClick={() => router.push('/kurulum')}
+            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg font-semibold"
+          >
+            Google Sheets Kurulumu Yap
+          </button>
         </div>
       </div>
     );
@@ -122,26 +133,16 @@ export default function ProfilPage() {
           />
         ) : (
           <div className="space-y-6">
-            {/* Profil bilgileri mevcut - şimdi sheet kurulumunu göster */}
-            <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold text-green-900">✅ Profil Tamamlandı!</h3>
-                  <p className="text-green-700">
-                    Hoş geldiniz, {existingProfile.isim} {existingProfile.soyisim}!
-                  </p>
-                </div>
-                <button
-                  onClick={() => setExistingProfile(null)}
-                  className="text-green-600 hover:text-green-800 underline text-sm"
-                >
-                  Düzenle
-                </button>
-              </div>
+            {/* Profil bilgileri mevcut - sheet kurulumuna yönlendir */}
+            <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-6 text-center">
+              <div className="text-6xl mb-4">🔄</div>
+              <h3 className="text-2xl font-bold text-yellow-900 mb-4">
+                Kurulum Devam Etmiyor
+              </h3>
+              <p className="text-yellow-800 mb-4">
+                Google Sheets kurulumunu tamamlamak için kurulum sayfasına yönlendiriliyorsunuz.
+              </p>
             </div>
-
-            {/* Sheet kurulum wizard'ı */}
-            <SheetSetupWizard />
           </div>
         )}
 
