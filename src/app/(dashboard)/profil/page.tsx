@@ -12,6 +12,8 @@ export default function ProfilPage() {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [existingProfile, setExistingProfile] = useState<KullaniciSheetData | null>(null);
+  const [sheetUrl, setSheetUrl] = useState('');
+  const [sheetId, setSheetId] = useState('');
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -124,26 +126,108 @@ export default function ProfilPage() {
           </p>
         </header>
 
-        {/* Google Sheets Kurulumu - Çok Basit */}
+        {/* Google Sheets Kurulumu - Step-by-step */}
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg mb-8">
           <div className="text-center">
             <div className="text-5xl mb-3">📊</div>
-            <h2 className="text-xl font-bold mb-2">İlaç Takip Verilerinizi Saklamak İçin</h2>
-            <p className="text-blue-100 mb-4">Kendi Google Sheets şablonunuzu oluşturun - sadece 1 tık!</p>
+            <h2 className="text-xl font-bold mb-4">İlaç Takip Verilerinizi Saklamak İçin</h2>
 
-            <button
-              onClick={() => {
-                const copyUrl = 'https://docs.google.com/spreadsheets/d/1EzHGDwKgt--A86w_k90ISrDKlagdeuyU0ryaEmoVOiY/copy';
-                window.open(copyUrl, '_blank');
-              }}
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-lg font-bold text-lg shadow-xl transition-all hover:scale-105"
-            >
-              🚀 Şablonu Kopyala
-            </button>
+            {!sheetId ? (
+              <>
+                <div className="space-y-3 mb-6 text-sm">
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className="bg-white text-blue-600 px-2 py-1 rounded text-xs font-bold">1</span>
+                    <span>Yeni sekmede açılan şablonu kopyalayın</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className="bg-white text-blue-600 px-2 py-1 rounded text-xs font-bold">2</span>
+                    <span>Aile üyeleriniz ile paylaşmak istiyorsanız paylaş butonunu kullanın</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className="bg-white text-blue-600 px-2 py-1 rounded text-xs font-bold">3</span>
+                    <span>Şablon linkini aşağıdaki alana yapıştırın</span>
+                  </div>
+                </div>
 
-            <p className="text-blue-100 text-sm mt-3">
-              💕 Verileriniz tamamen sizin Google hesabınızda güvenli şekilde saklanır
-            </p>
+                <div className="space-y-4">
+                  <div>
+                    <button
+                      onClick={() => {
+                        const copyUrl = 'https://docs.google.com/spreadsheets/d/1EzHGDwKgt--A86w_k90ISrDKlagdeuyU0ryaEmoVOiY/copy';
+                        window.open(copyUrl, '_blank');
+                      }}
+                      className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-bold shadow-xl transition-all hover:scale-105 mr-4"
+                    >
+                      🚀 Şablonu Aç
+                    </button>
+
+                    <input
+                      type="url"
+                      placeholder="Google Sheets linkini aşağıya yapıştırın..."
+                      value={sheetUrl}
+                      onChange={(e) => {
+                        setSheetUrl(e.target.value);
+                        // Extract sheet ID from URL
+                        const match = e.target.value.match(/\/d\/([a-zA-Z0-9-_]+)/);
+                        if (match) {
+                          setSheetId(match[1]);
+                        } else {
+                          setSheetId('');
+                        }
+                      }}
+                      className="text-gray-900 px-4 py-3 rounded-lg text-sm font-medium border-2 border-gray-300 focus:border-blue-400 focus:outline-none transition-all"
+                      style={{ minWidth: '300px' }}
+                    />
+                  </div>
+
+                  {sheetId && (
+                    <button
+                      onClick={async () => {
+                        try {
+                          setLoading(true);
+                          const response = await fetch('/api/profil?setup=true', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ sheet_id: sheetId }),
+                          });
+
+                          if (response.ok) {
+                            setExistingProfile({ sheet_id: sheetId } as KullaniciSheetData);
+                          } else {
+                            alert('Sheets ID kaydedilirken hata oluştu.');
+                          }
+                        } catch (error) {
+                          console.error('Error:', error);
+                          alert('Sheets ID kaydedilirken bir hata oluştu.');
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                      className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-bold text-lg shadow-xl transition-all"
+                      disabled={loading}
+                    >
+                      {loading ? '⚡ Kaydediliyor...' : '✅ Kurulumu Tamamla'}
+                    </button>
+                  )}
+                </div>
+
+                <p className="text-blue-100 text-sm mt-4">
+                  💕 Verileriniz sadece sizin Google hesabınızda güvenli şekilde saklanır
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="bg-green-500 text-white px-4 py-2 rounded-lg inline-block">
+                  <span className="text-2xl mr-2">✅</span>
+                  <span className="font-bold">Kurulum Tamamlandı!</span>
+                </div>
+                <p className="text-blue-100 text-lg mt-4">
+                  Artık profil bilgilerinizi aşağıya doldurabilirsiniz
+                </p>
+              </>
+            )}
           </div>
         </div>
 
