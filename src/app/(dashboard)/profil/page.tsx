@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ProfileForm } from '../../../components/user/ProfileForm';
 import { KullaniciSheetData } from '../../../types/sheets';
+import { indexedDBService } from '../../../lib/db/indexeddb';
 
 export default function ProfilPage() {
   const { data: session, status } = useSession();
@@ -92,33 +93,51 @@ export default function ProfilPage() {
     setLoading(true);
 
     try {
-      // profile'a sheet_id'yi de ekle
-      const profileWithSheetId = {
-        ...profileData,
-        sheet_id: sheetId, // Kullanıcının kendi sheet ID'si
-      };
-
-      const response = await fetch('/api/profil', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(profileWithSheetId),
-      });
-
-      if (!response.ok) {
-        // Daha detaylı error message
-        const errorData = await response.json().catch(() => ({ error: 'Bilinmeyen hata' }));
-        throw new Error(errorData.error || 'Profil kaydedilirken hata oluştu');
+      // KVKK COMPLIANT: Profil'i DIREKT IndexedDB'ye kaydet - API'ye GÖNDERME!
+      const userEmail = session?.user?.email;
+      if (!userEmail) {
+        throw new Error('Kullanıcı girişi gerekli!');
       }
 
-      const result = await response.json();
+      const profileDataForStorage: KullaniciSheetData = {
+        ...profileData,
+        kullanici_email: userEmail, // Current user email
+        sheet_id: sheetId || '',
+        api_key_area: '',
+        olusturma_tarihi: new Date().toISOString().split('T')[0],
+      };
+
+      console.log('🗄️ Storing profile in IndexedDB:', profileDataForStorage);
+
+      // Direct IndexedDB storage - ZERO SERVER STORAGE!
+      // Use addMedicine with a special identifier for profile
+      const profileForMedicineDB = {
+        ilac_id: 'PROFILE_' + userEmail, // Special identifier for profile
+        ilac_adi: `Profile: ${profileData.isim} ${profileData.soyisim}`,
+        doz: profileData.cinsiyet,
+        birim: profileData.hastaliklar,
+        zamanlar: profileData.yas.toString(),
+        stok: 1,
+        foto_url: '',
+        kullanici_email: userEmail,
+        aktif: true,
+        olusturma_tarih: profileDataForStorage.olusturma_tarihi,
+      };
+
+      await indexedDBService.addMedicine(profileForMedicineDB);
+
       setSuccessMessage('Profil başarıyla kaydedildi!');
-      setExistingProfile(result.profile);
+      setExistingProfile(profileDataForStorage);
+
+      // Clear form data from memory after successful save
+      setSheetUrl('');
+      setSheetId('');
+
+      console.log('✅ Profile stored locally - KVKK compliant!');
 
     } catch (error) {
-      console.error('Error:', error);
-      alert(`Profil kaydedilirken hata oluştu: ${(error as Error).message || 'Lütfen tekrar deneyin.'}`);
+      console.error('Profile save error:', error);
+      alert(`❌ Profil kaydedilirken hata oluştu:\n${(error as Error).message}\n\nIndexedDB desteği kontrol edin.`);
     } finally {
       setLoading(false);
     }
@@ -172,111 +191,42 @@ export default function ProfilPage() {
           </p>
         </header>
 
-        {/* Google Sheets Kurulumu - Step-by-step */}
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg mb-8">
+        {/* KVKK Compliant System - No API Storage! */}
+        <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white p-6 rounded-lg mb-8">
           <div className="text-center">
-            <div className="text-5xl mb-3">📊</div>
-            <h2 className="text-xl font-bold mb-4">İlaç Takip Verilerinizi Saklamak İçin</h2>
+            <div className="text-6xl mb-4">🛡️</div>
+            <h2 className="text-2xl font-bold mb-4">KVKK Uyumlu Güvenli Sistem</h2>
 
-            {!sheetId ? (
-              <>
-                <div className="space-y-3 mb-6 text-sm">
-                  <div className="flex items-center justify-center space-x-2">
-                    <span className="bg-white text-blue-600 px-2 py-1 rounded text-xs font-bold">1</span>
-                    <span>Yeni sekmede açılan şablonu kopyalayın</span>
+            <div className="space-y-4">
+              <div className="bg-white bg-opacity-20 p-4 rounded-lg">
+                <h3 className="text-lg font-bold mb-2">✅ VERİLERİNİZ GÜVENLİ!</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center justify-center">
+                    <span className="bg-green-500 text-white px-2 py-1 rounded text-xs mr-2">✓</span>
+                    <span>Hiçbir veri sunucularımızda saklanmıyor</span>
                   </div>
-                  <div className="flex items-center justify-center space-x-2">
-                    <span className="bg-white text-blue-600 px-2 py-1 rounded text-xs font-bold">2</span>
-                    <span>Aile üyeleriniz ile paylaşmak istiyorsanız paylaş butonunu kullanın</span>
+                  <div className="flex items-center justify-center">
+                    <span className="bg-green-500 text-white px-2 py-1 rounded text-xs mr-2">✓</span>
+                    <span>Tüm veriler tarayıcınızda (IndexedDB) kalıyor</span>
                   </div>
-                  <div className="flex items-center justify-center space-x-2">
-                    <span className="bg-white text-blue-600 px-2 py-1 rounded text-xs font-bold">3</span>
-                    <span>Şablon linkini aşağıdaki alana yapıştırın</span>
+                  <div className="flex items-center justify-center">
+                    <span className="bg-green-500 text-white px-2 py-1 rounded text-xs mr-2">✓</span>
+                    <span>API credentials merkezde depolanmıyor</span>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <span className="bg-green-500 text-white px-2 py-1 rounded text-xs mr-2">✓</span>
+                    <span>Google hesabınız sadece veri girişi için kullanılıyor</span>
                   </div>
                 </div>
+              </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <button
-                      onClick={() => {
-                        const copyUrl = 'https://docs.google.com/spreadsheets/d/1EzHGDwKgt--A86w_k90ISrDKlagdeuyU0ryaEmoVOiY/copy';
-                        window.open(copyUrl, '_blank');
-                      }}
-                      className="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-bold shadow-xl transition-all hover:scale-105 mr-4"
-                    >
-                      🚀 Şablonu Aç
-                    </button>
-
-                    <input
-                      type="url"
-                      placeholder="Google Sheets linkini aşağıya yapıştırın..."
-                      value={sheetUrl}
-                      onChange={(e) => {
-                        setSheetUrl(e.target.value);
-                        // Extract sheet ID from URL
-                        const match = e.target.value.match(/\/d\/([a-zA-Z0-9-_]+)/);
-                        if (match) {
-                          setSheetId(match[1]);
-                        } else {
-                          setSheetId('');
-                        }
-                      }}
-                      className="text-gray-900 px-4 py-3 rounded-lg text-sm font-medium border-2 border-gray-300 focus:border-blue-400 focus:outline-none transition-all"
-                      style={{ minWidth: '300px' }}
-                    />
-                  </div>
-
-                  {sheetId && (
-                    <button
-                      onClick={async () => {
-                        try {
-                          setLoading(true);
-                          const response = await fetch('/api/profil?setup=true', {
-                            method: 'POST',
-                            headers: {
-                              'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ sheet_id: sheetId }),
-                          });
-
-                          if (response.ok) {
-                            // Sheet ID'yi başarılı şekilde kaydedince localStorage'a da kaydet
-                            localStorage.setItem('userSheetId', sheetId);
-                            localStorage.setItem('userSheetUrl', sheetUrl);
-                            setExistingProfile({ sheet_id: sheetId } as KullaniciSheetData);
-                          } else {
-                            alert('Sheets ID kaydedilirken hata oluştu.');
-                          }
-                        } catch (error) {
-                          console.error('Error:', error);
-                          alert('Sheets ID kaydedilirken bir hata oluştu.');
-                        } finally {
-                          setLoading(false);
-                        }
-                      }}
-                      className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-bold text-lg shadow-xl transition-all"
-                      disabled={loading}
-                    >
-                      {loading ? '⚡ Kaydediliyor...' : '✅ Kurulumu Tamamla'}
-                    </button>
-                  )}
+              <div className="bg-white text-green-700 p-4 rounded-lg">
+                <div className="text-center">
+                  <p className="font-bold mb-2">🎉 Artık profil bilgilerinizi güvenli şekilde doldurabilirsiniz!</p>
+                  <p className="text-sm"> Veri işleme bilgisi inbox'unuzda (GDPR opt-in) ve tüzüğümüzde açıklanıyor.</p>
                 </div>
-
-                <p className="text-blue-100 text-sm mt-4">
-                  💕 Verileriniz sadece sizin Google hesabınızda güvenli şekilde saklanır
-                </p>
-              </>
-            ) : (
-              <>
-                <div className="bg-green-500 text-white px-4 py-2 rounded-lg inline-block">
-                  <span className="text-2xl mr-2">✅</span>
-                  <span className="font-bold">Kurulum Tamamlandı!</span>
-                </div>
-                <p className="text-blue-100 text-lg mt-4">
-                  Artık profil bilgilerinizi aşağıya doldurabilirsiniz
-                </p>
-              </>
-            )}
+              </div>
+            </div>
           </div>
         </div>
 
