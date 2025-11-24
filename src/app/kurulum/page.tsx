@@ -1,116 +1,205 @@
 'use client';
 
+import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function SetupGuidePage() {
+  const { data: session, status } = useSession();
   const router = useRouter();
+  const [setupStep, setSetupStep] = useState<'login' | 'permission' | 'sheets'>('login');
 
-  const handleBack = () => {
-    router.back();
+  // User logged in, show permission step
+  useEffect(() => {
+    if (session) {
+      setSetupStep('permission');
+
+      // If already has user sheets in localStorage, redirect to profil
+      const existingSheets = localStorage.getItem('userSheetsId');
+      if (existingSheets) {
+        setSetupStep('sheets');
+        // Check if sheets are fully set up by trying to load them
+        setTimeout(() => router.push('/profil'), 2000);
+      }
+    }
+  }, [session, router]);
+
+  const handleGoogleLogin = () => {
+    signIn('google', { callbackUrl: '/kurulum' });
+  };
+
+  const handleContinueToApp = () => {
+    router.push('/profil');
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6 md:p-8">
-        <header className="mb-8">
-          <button
-            onClick={handleBack}
-            className="mb-4 text-blue-600 hover:text-blue-800 text-lg"
-          >
-            ← Geri Dön
-          </button>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            ⏯️ Süper Kolay Google Sheets Kurulumu
+        <header className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            🔐 Güvenli Kurulumu
           </h1>
           <p className="text-xl text-gray-600">
-            Sadece 3 adımda kişisel veri saklama alanınızı hazırlayın! Hiç teknik bilgi gerekmiyor.
+            Tüm verileriniz kendi Google hesabınızda güvenli bir şekilde saklanır
           </p>
         </header>
 
-        <div className="space-y-6">
-          {/* Büyük tanıtım kartı */}
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-8 rounded-lg shadow-xl">
-            <div className="text-center">
-              <div className="text-8xl mb-4">🎯</div>
-              <h2 className="text-4xl font-bold mb-4">1 Dakikalık Kurulum!</h2>
-              <p className="text-xl opacity-90">
-                Karmaşık API ayarları olmadan anında hazırsınız. Sadece tıklayıp kopyala!
+        {/* Login Step */}
+        {setupStep === 'login' && (
+          <div className="text-center">
+            <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white p-8 rounded-xl shadow-xl mb-8">
+              <div className="text-6xl mb-4">🔑</div>
+              <h2 className="text-3xl font-bold mb-4">Sisteme Giriş</h2>
+              <p className="text-xl opacity-90 max-w-2xl mx-auto">
+                Güvenli ve KVKK uyumlu ilaç takip sistemi için Google hesabınıza giriş yapın
               </p>
             </div>
-          </div>
 
-          <div className="border-l-4 border-blue-500 pl-8 bg-blue-50 p-6 rounded-r-lg">
-            <h2 className="text-3xl font-bold text-blue-900 mb-4">📋 Sadece 3 Adım:</h2>
-            <div className="space-y-6">
-              <div className="flex items-start space-x-4">
-                <div className="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-xl">1</div>
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Şablonu Kopyala</h3>
-                  <p className="text-gray-700">Aşağıdaki butona tıklayarak hazır Google Sheets şablonu kendi Google Drive'ınızda kopyalayın.</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-xl">2</div>
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">İsim Verin</h3>
-                  <p className="text-gray-700">"İlaç Takip [İsminiz]" gibi anlamlı bir isim verin.</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-purple-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-xl">3</div>
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">URL'den ID'yi Alın</h3>
-                  <p className="text-gray-700">Google Sheets URL'sinden son kısımdaki ID'yi kopyalayın. (Örnek: /d/[ID]/edit)</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Ana kurulum butonu */}
-          <div className="flex justify-center">
-            <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-dashed border-gray-300 max-w-lg w-full text-center">
-              <div className="text-6xl mb-4">📊</div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">Google Sheets Şablonu</h3>
+            <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-dashed border-green-300 max-w-lg mx-auto mb-8">
+              <div className="text-5xl mb-4">✨</div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">Tek Tık Kurulumu</h3>
               <p className="text-gray-600 mb-6">
-                Hazır veri yapılarına sahip şablonu 1 tıkla kopyalayın. Hiç teknik bilgi gerekmiyor!
+                Google hesabunuz ile giriş yaparak sistem otomatik olarak kurulur. Hiç teknik bilgi gerekmez!
               </p>
               <button
-                onClick={() => {
-                  const templateUrl = 'https://docs.google.com/spreadsheets/d/1EzHGDwKgt--A86w_k90ISrDKlagdeuyU0ryaEmoVOiY/edit?usp=sharing';
-                  window.open(templateUrl, '_blank');
-
-                  setTimeout(() => {
-                    alert('🎉 Şablon yeni sekmede açıldı!\n\n📝 Lütfen:\n1. "Dosya" → "Şablondan kopyala" seçin\n2. "İlaç Takip [İsminiz]" gibi isim verin\n3. Save edin ve URL\'den ID\'yi alın\n\n🏁 Hazır olunca profil doldurabilirsin!');
-                  }, 1500);
-                }}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-lg font-bold text-xl transition-all transform hover:scale-105 shadow-lg"
+                onClick={handleGoogleLogin}
+                className="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white px-8 py-4 rounded-lg font-bold text-xl transition-all transform hover:scale-105 shadow-lg"
               >
-                🚀 Şablonu Kopyala (Ücretsiz!)
+                🔐 Google ile Güvenli Giriş Yap
               </button>
-              <p className="text-sm text-gray-500 mt-4">
-                📞 Sorunuz olursa WhatsApp'tan yazın: +90 XYZ
-              </p>
+            </div>
+
+            <div className="text-left">
+              <h3 className="text-xl font-semibold mb-4">👤 Sistemi Kullandıran Kişiler:</h3>
+              <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                <div className="bg-gray-50 p-4 rounded-lg border">
+                  <div className="text-4xl mb-2">👴</div>
+                  <h4 className="font-bold text-gray-800">Yaşlı Hastalar</h4>
+                  <p className="text-gray-600">İlaçlarını hatırlama ve takip sistemi</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg border">
+                  <div className="text-4xl mb-2">💼</div>
+                  <h4 className="font-bold text-gray-800">Bakıcılar</h4>
+                  <p className="text-gray-600">Birden fazla kişi için güvenli monitoring</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg border">
+                  <div className="text-4xl mb-2">🏥</div>
+                  <h4 className="font-bold text-gray-800">Bakımevi Personeli</h4>
+                  <p className="text-gray-600">Profesyonel ilaç yönetimi</p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-2">Bitirdikten Sonra:</h3>
-          <p className="text-gray-700">
-            Kurulum tamamlandıktan sonra uygulamayı yeniden başlatın. Yaşlı kullanıcı artık bakıcı yardımına ihtiyaç kalmadan hesaplarını güvenli bir şekilde yönetebilir.
-          </p>
-        </div>
+        {/* Permission Step - User is logged in */}
+        {setupStep === 'permission' && (
+          <div className="text-center">
+            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-8 rounded-xl shadow-xl mb-8">
+              <div className="text-6xl mb-4">✅</div>
+              <h2 className="text-3xl font-bold mb-4">Hoş Geldiniz!</h2>
+              <p className="text-xl opacity-90">
+                Sisteme başarıyla giriş yaptınız: <strong>{session?.user?.email}</strong>
+              </p>
+            </div>
 
-        <div className="mt-6">
-          <button
-            onClick={handleBack}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg font-semibold"
-          >
-            Ana Sayfaya Dön
-          </button>
-        </div>
+            <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-dashed border-blue-300 max-w-3xl mx-auto mb-8">
+              <div className="text-5xl mb-4">🔓</div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">Son Adım: Güvenlik İzni</h3>
+
+              <div className="text-left mb-6 space-y-4">
+                <div className="flex items-start space-x-3">
+                  <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">✓</span>
+                  <div>
+                    <h4 className="font-semibold text-gray-800">Güvenli Veri Saklama</h4>
+                    <p className="text-gray-600">Kendi Google Drive ve Sheets hesabınızda veriler saklanacak</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">✓</span>
+                  <div>
+                    <h4 className="font-semibold text-gray-800">Hafıza</h4>
+                    <p className="text-gray-600">İlaç hatırlatmaları için kendinize Calendar izin verenizi onaylayın</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">✓</span>
+                  <div>
+                    <h4 className="font-semibold text-gray-800">KVKK Uyumluluk</h4>
+                    <p className="text-gray-600">%100 kullanıcı kontrolü altında veri saklama</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                <h4 className="font-bold text-gray-800 mb-2">Google'dan Gelecek Güvenlik Uyarısı:</h4>
+                <p className="text-gray-700 text-sm">
+                  "Bu app şunlara erişmek istiyor:"<br/>
+                  → Google profil bilgileriniz (okuma)<br/>
+                  → Google Sheets dokümanlarınız (tam erişim)<br/>
+                  → Google Calendar etkinlikleriniz (tam erişim)<br/>
+                  → Google Drive dosyalarınız (dosya yükleme)
+                </p>
+              </div>
+
+              <button
+                onClick={handleContinueToApp}
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-lg font-bold text-xl transition-all transform hover:scale-105 shadow-lg"
+              >
+                🚀 Sistemi Aktif Et
+              </button>
+
+              <p className="text-sm text-gray-500 mt-4">
+                Sistem otomatik olarak size özel güvenli veri alanı oluşturacaktır
+              </p>
+            </div>
+
+            <div className="text-center">
+              <h4 className="text-xl font-semibold mb-4">📊 Sistem Özellikleri:</h4>
+              <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                  <div className="text-3xl mb-2">🛡️</div>
+                  <h5 className="font-bold text-green-800">KVKK Uyumsuz</h5>
+                  <p className="text-green-700 text-sm">Verileriniz hiçbir zaman servisa gönderilmez</p>
+                </div>
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                  <div className="text-3xl mb-2">📱</div>
+                  <h5 className="font-bold text-blue-800">Offline-First</h5>
+                  <p className="text-blue-700 text-sm">İnternet olmadan çalışabilir</p>
+                </div>
+                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                  <div className="text-3xl mb-2">👥</div>
+                  <h5 className="font-bold text-purple-800">Aile Dostu</h5>
+                  <p className="text-purple-700 text-sm">Fotoğraf paylaşımı ile işbirliği</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Sheets Setup Complete */}
+        {setupStep === 'sheets' && (
+          <div className="text-center">
+            <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white p-8 rounded-xl shadow-xl mb-8">
+              <div className="text-6xl mb-4">🎉</div>
+              <h2 className="text-3xl font-bold mb-4">Kurulum Tamamlandı!</h2>
+              <p className="text-xl opacity-90">
+                Kişisel veri alanınız başarıyla oluşturulmuştur
+              </p>
+            </div>
+
+            <p className="text-lg text-gray-600 mb-6">
+              Artık sisteminizi kullanabilirsiniz!
+            </p>
+
+            <button
+              onClick={handleContinueToApp}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-lg font-bold text-xl transition-all transform hover:scale-105 shadow-lg"
+            >
+              ✨ Sisteme Geç
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

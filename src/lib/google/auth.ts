@@ -6,6 +6,20 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "dummy-client-id",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "dummy-client-secret",
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          scope: [
+            'openid',
+            'profile',
+            'email',
+            'https://www.googleapis.com/auth/spreadsheets',
+            'https://www.googleapis.com/auth/drive.file',
+            'https://www.googleapis.com/auth/calendar.events'
+          ].join(' ')
+        },
+      },
     }),
   ],
   pages: {
