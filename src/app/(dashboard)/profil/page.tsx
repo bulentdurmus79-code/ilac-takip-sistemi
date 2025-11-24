@@ -34,9 +34,31 @@ export default function ProfilPage() {
       return;
     }
 
+    // 🔍 FIRST CHECK: Can we even access any Google API?
+    const testGoogleAccess = async () => {
+      try {
+        const testResponse = await fetch('/api/ilac/liste');
+        console.log('🔍 TEST API Status:', testResponse.status);
+
+        if (testResponse.status === 500) {
+          alert('🚨 GOOGLE SHEETS ERİŞİM SORUNU:\n\n- Sistem Google Sheets API bağlantısı kuramıyor\n- Vercel Deployment Settings ile Google Service Account credentials eksik\n\n🔧 ÇÖZÜM: Vercel Dashboard → Settings → Environment Variables kotrol edin');
+          return;
+        }
+
+        if (!testResponse.ok) {
+          console.log('📊 Other API issue:', testResponse.status);
+        }
+      } catch (testError) {
+        console.error('❌ API Test failed:', testError);
+      }
+    };
+
     const loadExistingProfile = async () => {
       try {
+        console.log('📋 Loading profile...');
         const response = await fetch('/api/profil');
+        console.log('📋 Profile response:', response.status);
+
         if (response.ok) {
           const data = await response.json();
           if (data.profile) {
@@ -47,12 +69,16 @@ export default function ProfilPage() {
               return;
             }
           }
+        } else {
+          console.log('❌ Profile load failed, status:', response.status);
         }
       } catch (error) {
         console.error('Profil yüklenirken hata:', error);
+        alert(`❌ PROFİL YÜKLENEMİYOR:\n\nGoogle Sheets bağlantı problemi ${error}`);
       }
     };
 
+    testGoogleAccess();
     loadExistingProfile();
   }, [session, status, router]);
 
