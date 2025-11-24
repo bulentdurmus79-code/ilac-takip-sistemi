@@ -124,53 +124,27 @@ export default function ProfilPage() {
           </p>
         </header>
 
-        {/* Google Sheets Kurulumu Bölümü */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-          <div className="text-center mb-4">
-            <div className="text-6xl mb-4">📊</div>
-            <h2 className="text-2xl font-bold text-blue-900 mb-2">
-              Google Sheets Kurulumu Gereklidir
-            </h2>
-            <p className="text-blue-700 mb-4">
-              İlaç takip verileriniz için kişisel Google Sheets şablonu oluşturmanız zorunludur
+        {/* Google Sheets Kurulumu - Çok Basit */}
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg mb-8">
+          <div className="text-center">
+            <div className="text-5xl mb-3">📊</div>
+            <h2 className="text-xl font-bold mb-2">İlaç Takip Verilerinizi Saklamak İçin</h2>
+            <p className="text-blue-100 mb-4">Kendi Google Sheets şablonunuzu oluşturun - sadece 1 tık!</p>
+
+            <button
+              onClick={() => {
+                const sharingUrl = 'https://docs.google.com/spreadsheets/d/1EzHGDwKgt--A86w_k90ISrDKlagdeuyU0ryaEmoVOiY/edit?usp=sharing';
+                window.open(sharingUrl, '_blank');
+                alert('✅ Yeni sekmede Google Sheets şablonu açıldı!\n🥷 Şimdi şablonu kendi Gmail hesabınıza kopyalayın.\n🍁 Sonra buraya dönüp profilinizi doldurun.');
+              }}
+              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-lg font-bold text-lg shadow-xl transition-all hover:scale-105"
+            >
+              🚀 Google Sheet Kurulumunu Başlat
+            </button>
+
+            <p className="text-blue-100 text-sm mt-3">
+              💕 Verileriniz tamamen sizin Google hesabınızda güvenli şekilde saklanır
             </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-sm border mb-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">📋 Super Basit Kurulum!</h3>
-            <ol className="list-decimal list-inside text-gray-700 space-y-2 text-sm">
-              <li>Aşağıdaki butona tıklayarak hazır şablonu kendi Google Drive'ınızda kopyalayın</li>
-              <li>"İlaç Takip [İsminiz]" gibi bir isimle kaydedin (Google Console veya API ayarlarına gerek yok!)</li>
-              <li>Bu kadar! Artık profil bilgilerinizi saklamak için hazır</li>
-            </ol>
-            <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded text-sm">
-              <strong>✨ Kolaylık:</strong> Karmaşık API ayarları yapmanıza gerek yok! Sadece kopyala ve kullanmaya başla.
-            </div>
-          </div>
-
-          <div className="flex justify-center">
-            <div className="bg-white p-4 rounded-lg shadow-sm border max-w-md w-full">
-              <p className="text-sm text-gray-600 mb-4">
-                ✨ Kişisel verilerinizin bulunduğu Google Sheet'inizi oluşturun
-              </p>
-              <button
-                onClick={() => {
-                  const templateUrl = 'https://docs.google.com/spreadsheets/d/1EzHGDwKgt--A86w_k90ISrDKlagdeuyU0ryaEmoVOiY/copy';
-                  window.open(templateUrl, '_blank');
-
-                  // Kullanıcıya bilgi ver
-                  setTimeout(() => {
-                    alert('🎉 Google Sheets şablonu yeni sekmede açıldı!\n\n📝 Yeni sekmede:\n1. "Şablondan kopyala"yı seçin\n2. İsim verin: "İlaç Takip [İsminiz]"\n3. Drive\'ınızda kaydedin\n4. URL\'den ID\'yi alın\n5. Bu sayfaya dönerek profil doldurun');
-                  }, 1000);
-                }}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold text-lg transition-colors"
-              >
-                🔗 Google Sheets Şablonu Oluştur
-              </button>
-              <p className="text-xs text-gray-500 mt-2">
-                Tıklayınca yeni sekmede açılır • Kendi Google hesabınızda güvenli şekilde saklanır
-              </p>
-            </div>
           </div>
         </div>
 
