@@ -15,6 +15,18 @@ export default function ProfilPage() {
   const [sheetUrl, setSheetUrl] = useState('');
   const [sheetId, setSheetId] = useState('');
 
+  // Sayfa yüklenince localStorage'dan sheet bilgilerini çek
+  useEffect(() => {
+    const savedSheetId = localStorage.getItem('userSheetId');
+    const savedSheetUrl = localStorage.getItem('userSheetUrl');
+    if (savedSheetId) {
+      setSheetId(savedSheetId);
+    }
+    if (savedSheetUrl) {
+      setSheetUrl(savedSheetUrl);
+    }
+  }, []);
+
   useEffect(() => {
     if (status === 'loading') return;
     if (!session) {
@@ -202,6 +214,9 @@ export default function ProfilPage() {
                           });
 
                           if (response.ok) {
+                            // Sheet ID'yi başarılı şekilde kaydedince localStorage'a da kaydet
+                            localStorage.setItem('userSheetId', sheetId);
+                            localStorage.setItem('userSheetUrl', sheetUrl);
                             setExistingProfile({ sheet_id: sheetId } as KullaniciSheetData);
                           } else {
                             alert('Sheets ID kaydedilirken hata oluştu.');
