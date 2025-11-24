@@ -124,6 +124,37 @@ export default function ProfilPage() {
           </p>
         </header>
 
+        {/* Google Sheets Kurulumu Bölümü */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+          <div className="text-center mb-4">
+            <div className="text-6xl mb-4">📊</div>
+            <h3 className="text-2xl font-bold text-blue-900 mb-2">
+              Google Sheets Kurulumu
+            </h3>
+            <p className="text-blue-700">
+              İlaç takip verileriniz için kişisel Google Sheets şablonu oluşturun
+            </p>
+          </div>
+
+          {/* Burada SheetSetupWizard'ı import edip kullanabiliriz */}
+          <div className="flex justify-center">
+            <div className="bg-white p-4 rounded-lg shadow-sm border max-w-md w-full">
+              <p className="text-sm text-gray-600 mb-4">
+                ✨ Kişisel verilerinizin bulunduğu Google Sheet'inizi oluşturun
+              </p>
+              <button
+                onClick={() => window.open('https://docs.google.com/spreadsheets/d/1EzHGDwKgt--A86w_k90ISrDKlagdeuyU0ryaEmoVOiY/copy', '_blank')}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold text-lg transition-colors"
+              >
+                📋 Google Sheet'i Oluştur
+              </button>
+              <p className="text-xs text-gray-500 mt-2">
+                Kendi Google Drive'ınızda güvenli şekilde saklanır
+              </p>
+            </div>
+          </div>
+        </div>
+
         {!existingProfile ? (
           <ProfileForm
             onSubmit={handleProfileSubmit}
@@ -132,15 +163,22 @@ export default function ProfilPage() {
           />
         ) : (
           <div className="space-y-6">
-            {/* Profil bilgileri mevcut - sheet kurulumuna yönlendir */}
-            <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-6 text-center">
-              <div className="text-6xl mb-4">🔄</div>
-              <h3 className="text-2xl font-bold text-yellow-900 mb-4">
-                Kurulum Devam Etmiyor
-              </h3>
-              <p className="text-yellow-800 mb-4">
-                Google Sheets kurulumunu tamamlamak için kurulum sayfasına yönlendiriliyorsunuz.
-              </p>
+            {/* Profil bilgileri mevcut - düzenleme seçeneği */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-green-900">✅ Profil Tamamlandı!</h3>
+                  <p className="text-green-700">
+                    Hoş geldiniz, {existingProfile.isim} {existingProfile.soyisim}!
+                  </p>
+                </div>
+                <button
+                  onClick={() => setExistingProfile(null)}
+                  className="text-green-600 hover:text-green-800 underline text-sm"
+                >
+                  Düzenle
+                </button>
+              </div>
             </div>
           </div>
         )}

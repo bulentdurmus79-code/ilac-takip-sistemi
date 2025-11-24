@@ -27,20 +27,18 @@ export default function HomePage() {
         const response = await fetch('/api/profil');
         const profileData = await response.json();
 
-        // ✅ Eğer profil VAR ve sheet_id de VAR → TAMAM, ana sayfaya devam
-        if (profileData.profile && profileData.profile.sheet_id) {
-          return; // Ana sayfaya devam et
+        // ✅ Sadece BU şartta ana sayfa devam et:
+        if (profileData.profile && profileData.profile.sheet_id && response.ok) {
+          return; // TAM SISTEM HAZIR - ana sayfaya devam
         }
 
-        // ❌ Sheet ID yoksa → /kurulum zorunlu (profil sonra dolsurulur)
-        if (!profileData.profile || !profileData.profile.sheet_id) {
-          router.push('/kurulum');
-          return;
-        }
+        // ❌ Tüm diğer durumda /kurulum zorunlu
+        router.push('/kurulum');
+        return;
 
       } catch (error) {
         console.error('Setup check failed:', error);
-        // Hata durumunda kurulum sayfasından başlat (safe option)
+        // API hatası durumunda bile kurulumdan başla (safe)
         router.push('/kurulum');
       }
     };
