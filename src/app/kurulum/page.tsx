@@ -3,6 +3,7 @@
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { tokenManager } from '../../lib/auth/tokenManager';
 
 export default function SetupGuidePage() {
   const { data: session, status } = useSession();
@@ -28,8 +29,138 @@ export default function SetupGuidePage() {
     signIn('google', { callbackUrl: '/kurulum' });
   };
 
-  const handleContinueToApp = () => {
-    router.push('/profil');
+  const handleContinueToApp = async () => {
+    try {
+      // Google Sheets oluşturma işlemi
+      await createUserSheets();
+      router.push('/profil');
+    } catch (error) {
+      console.error('Sheets oluşturma hatası:', error);
+      alert('Sheets oluşturma sırasında hata oluştu. Tekrar deneyin.');
+    }
+  };
+
+  // Kullanıcı için personal Google Sheets oluştur
+  const createUserSheets = async () => {
+    try {
+      const accessToken = await tokenManager.getValidToken();
+
+      if (!session?.user?.email) {
+        throw new Error('Kullanıcı email bilgisi eksik');
+      }
+
+      // Yeni Spreadsheet oluştur
+      const createResponse = await fetch(
+        'https://sheets.googleapis.com/v4/spreadsheets',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            properties: {
+              title: `İlaç Takip Sistemi - ${session.user.email}`,
+              locale: 'tr_TR',
+            },
+            sheets: [
+              {
+                properties: {
+                  title: 'ilaclar',
+                  sheetType: 'GRID',
+                  gridProperties: { rowCount: 1000, columnCount: 10 }
+                }
+              },
+              {
+                properties: {
+                  title: 'ilac_gecmis',
+                  sheetType: 'GRID',
+                  gridProperties: { rowCount: 5000, columnCount: 8 }
+                }
+              },
+              {
+                properties: {
+                  title: 'kan_sekeri',
+                  sheetType: 'GRID',
+                  gridProperties: { rowCount: 2000, columnCount: 6 }
+                }
+              },
+              {
+                properties: {
+                  title: 'tansiyon',
+                  sheetType: 'GRID',
+                  gridProperties: { rowCount: 2000, columnCount: 7 }
+                }
+              }
+            ]
+          })
+        }
+      );
+
+      if (!createResponse.ok) {
+        const errorData = await createResponse.json();
+        console.error('Google Sheets API Error:', errorData);
+        throw new Error('Sheets oluşturma başarısız');
+      }
+
+      const sheetData = await createResponse.json();
+      const spreadsheetId = sheetData.spreadsheetId;
+
+      // Başlık satırlarını ekle
+      await addSheetHeaders(accessToken, spreadsheetId);
+
+      // Sheets ID'yi kaydet
+      localStorage.setItem('userSheetsId', spreadsheetId);
+      localStorage.setItem('sheetsCreatedAt', new Date().toISOString());
+
+      console.log('✅ User sheets oluşturuldu:', spreadsheetId);
+
+    } catch (error) {
+      console.error('Sheets creation failed:', error);
+      throw error;
+    }
+  };
+
+  // Sheets'lere başlık satırları ekle
+  const addSheetHeaders = async (accessToken: string, spreadsheetId: string) => {
+    const headersData = {
+      ilaclar: [
+        'İlaç ID', 'İlaç Adı', 'Doz', 'Birim', 'Zaman', 'Aktif', 'Stok',
+        'Fotoğraf URL', 'Oluşturulma', 'Güncelleme'
+      ],
+      ilac_gecmis: [
+        'Kayıt ID', 'İlaç ID', 'Tarih', 'Saat', 'Durum', 'Erteleme Dakika',
+        'Not', 'Sync', 'Timestamp'
+      ],
+      kan_sekeri: [
+        'Kayıt ID', 'Tarih', 'Saat', 'Değer', 'Tür', 'Normal', 'Not', 'Sync', 'Timestamp'
+      ],
+      tansiyon: [
+        'Kayıt ID', 'Tarih', 'Saat', 'Sistolik', 'Diyastolik', 'Nabız',
+        'Normal', 'Not', 'Sync', 'Timestamp'
+      ]
+    };
+
+    // Her sheet için headers ekle
+    for (const [sheetName, headers] of Object.entries(headersData)) {
+      const updateResponse = await fetch(
+        `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}!A1:J1?valueInputOption=RAW`,
+        {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            values: [headers]
+          })
+        }
+      );
+
+      if (!updateResponse.ok) {
+        console.warn(`Header ekleme başarısız (${sheetName}):`, await updateResponse.text());
+      }
+    }
   };
 
   return (
