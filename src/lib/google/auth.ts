@@ -23,11 +23,8 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }: any) {
-      // Successful login sonrası dashboard'a yönlendir
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      // External URL'e gitmeye çalışırsa ana sayfaya yönlendir
-      if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
+      // After successful Google login, always redirect to kurulum (setup) page
+      return `${baseUrl}/kurulum`;
     },
   },
   session: {
