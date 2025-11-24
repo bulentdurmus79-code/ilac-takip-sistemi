@@ -137,13 +137,15 @@ export default function ProfilPage() {
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow-sm border mb-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">📋 Adım Adım Kurulumn</h3>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">📋 Super Basit Kurulum!</h3>
             <ol className="list-decimal list-inside text-gray-700 space-y-2 text-sm">
-              <li>Aşağıdaki butona tıklayarak referans şablonunu kendi Google Drive'ınızda kopyalayın</li>
-              <li>Şablonu "İlaç Takip Verileri [İsminiz]" gibi bir isimle kaydedin</li>
-              <li>Google Sheets URL'sinden son kısmındaki sheet ID'yi alın</li>
-              <li>Kurulumu tamamladığınızda profil bilgilerinizi doldurup kaydedebilirsiniz</li>
+              <li>Aşağıdaki butona tıklayarak hazır şablonu kendi Google Drive'ınızda kopyalayın</li>
+              <li>"İlaç Takip [İsminiz]" gibi bir isimle kaydedin (Google Console veya API ayarlarına gerek yok!)</li>
+              <li>Bu kadar! Artık profil bilgilerinizi saklamak için hazır</li>
             </ol>
+            <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded text-sm">
+              <strong>✨ Kolaylık:</strong> Karmaşık API ayarları yapmanıza gerek yok! Sadece kopyala ve kullanmaya başla.
+            </div>
           </div>
 
           <div className="flex justify-center">

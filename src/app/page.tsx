@@ -21,27 +21,8 @@ export default function HomePage() {
       return;
     }
 
-    // 🚨KVKK FIRST: Önce HER kullanıcı kendi sheet'ini kurmalı
-    const checkUserSetup = async () => {
-      try {
-        const response = await fetch('/api/profil');
-        const profileData = await response.json();
-
-        // ✅ Sadece BU şartta ana sayfa devam et:
-        if (profileData.profile && profileData.profile.sheet_id && response.ok) {
-          return; // TAM SISTEM HAZIR - ana sayfaya devam
-        }
-
-        // ❌ Tüm diğer durumda /kurulum zorunlu
-        router.push('/kurulum');
-        return;
-
-      } catch (error) {
-        console.error('Setup check failed:', error);
-        // API hatası durumunda bile kurulumdan başla (safe)
-        router.push('/kurulum');
-      }
-    };
+    // 🎯 ÇOK BASİLEŞTİ: Artık zorunlu kurulum yok! Kullanıcı kendi akışını seçsin
+    // Kullanıcılara profil sayfasından Google Sheets kurulumu seçeneği sunacağız
 
     const loadSmartSuggestions = async () => {
       try {
@@ -86,7 +67,6 @@ export default function HomePage() {
       }
     };
 
-    checkUserSetup();
     loadSmartSuggestions();
 
     // Check every 30 minutes for new suggestions

@@ -20,89 +20,78 @@ export default function SetupGuidePage() {
             ← Geri Dön
           </button>
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Google API Kurulum Rehberi
+            ⏯️ Süper Kolay Google Sheets Kurulumu
           </h1>
           <p className="text-xl text-gray-600">
-            Bu kurulum bakıcı veya aile üyesi tarafından yapılmalıdır. Yaşlı kullanıcılar için gereklidir.
+            Sadece 3 adımda kişisel veri saklama alanınızı hazırlayın! Hiç teknik bilgi gerekmiyor.
           </p>
         </header>
 
         <div className="space-y-6">
-          <div className="border-l-4 border-blue-500 pl-6">
-            <h2 className="text-2xl font-semibold mb-2">Adım 1: Google Cloud Console'a Giriş</h2>
-            <div className="text-gray-700 space-y-2">
-              <p>1. <a href="https://console.cloud.google.com" target="_blank" className="text-blue-600 underline">console.cloud.google.com</a> adresine gidin</p>
-              <p>2. Google hesabınızla giriş yapın</p>
-              <p>3. "Yeni Proje Oluştur" veya mevcut bir proje seçin</p>
+          {/* Büyük tanıtım kartı */}
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-8 rounded-lg shadow-xl">
+            <div className="text-center">
+              <div className="text-8xl mb-4">🎯</div>
+              <h2 className="text-4xl font-bold mb-4">1 Dakikalık Kurulum!</h2>
+              <p className="text-xl opacity-90">
+                Karmaşık API ayarları olmadan anında hazırsınız. Sadece tıklayıp kopyala!
+              </p>
             </div>
           </div>
 
-          <div className="border-l-4 border-green-500 pl-6">
-            <h2 className="text-2xl font-semibold mb-2">Adım 2: API'leri Etkinleştirin</h2>
-            <div className="text-gray-700 space-y-2">
-              <p>1. Sol menüden "API'ler ve Hizmetler" → "Kütüphane"</p>
-              <p>2. "Google Sheets API" arayın ve etkinleştirin</p>
-              <p>3. "Google Calendar API" arayın ve etkinleştirin</p>
-              <p>4. "Google Drive API" arayın ve etkinleştirin</p>
-            </div>
-          </div>
-
-          <div className="border-l-4 border-yellow-500 pl-6">
-            <h2 className="text-2xl font-semibold mb-2">Adım 3: OAuth 2.0 Kimlik Bilgileri</h2>
-            <div className="text-gray-700 space-y-2">
-              <p>1. "API'ler ve Hizmetler" → "Kimlik Bilgileri"</p>
-              <p>2. "+ KİMLİK BİLGİLERİ OLUŞTUR" → "OAuth 2.0 İstemci Kimliği"</p>
-              <p>3. Uygulama türü: "Web uygulaması"</p>
-              <p>4. Yetkili yönlendirme URI'leri: <code className="bg-gray-200 px-2 py-1 rounded">http://localhost:3000/api/auth/callback/google</code></p>
-              <p>  Üretim için: <code className="bg-gray-200 px-2 py-1 rounded">https://yourdomain.com/api/auth/callback/google</code></p>
-            </div>
-          </div>
-
-          <div className="border-l-4 border-purple-500 pl-6">
-            <h2 className="text-2xl font-semibold mb-2">Adım 4: Dosyaları Yapılandırma</h2>
-            <div className="text-gray-700 space-y-2">
-              <p>1. Oluşturulan kimlik bilgisinden Client ID ve Client Secret'ı alın</p>
-              <p>2. .env.local dosyasını açın</p>
-              <p>3. GOOGLE_CLIENT_ID ve GOOGLE_CLIENT_SECRET yerine yazın</p>
-            </div>
-          </div>
-
-          <div className="border-l-4 border-red-500 pl-6">
-            <h2 className="text-2xl font-semibold mb-2">Adım 5: Google Sheets Veri Yapısı</h2>
-            <div className="text-gray-700 space-y-3">
-              <p><strong>5.1 Spreadsheet Oluştur:</strong></p>
-              <ul className="ml-6 space-y-1">
-                <li>• <a href="https://sheets.google.com" target="_blank" className="text-blue-600 underline">sheets.google.com</a> açın</li>
-                <li>• "Yeni yeni" butonuna tıklayarak yeni bir spreadsheet oluşturun</li>
-                <li>• İsim olarak "İlaç Takip Verilerim" koyabilir</li>
-              </ul>
-
-              <p><strong>5.2 Sheet'leri Oluştur:</strong> Alt taraftaki "+" ikonuna tıklayarak aşağıdaki sheet'leri oluşturun:</p>
-              <ul className="ml-6 bg-yellow-50 p-3 rounded space-y-1">
-                <li>• <code className="bg-gray-200 px-2 py-1 rounded">kullanici</code> (User profile bilgileri için)</li>
-                <li>• <code className="bg-gray-200 px-2 py-1 rounded">ilaclar</code> (İlaç bilgileri için)</li>
-                <li>• <code className="bg-gray-200 px-2 py-1 rounded">ilac_gecmis</code> (İlaç alım geçmişi için)</li>
-                <li>• <code className="bg-gray-200 px-2 py-1 rounded">kan_sekeri</code> (Kan şekeri ölçümleri için)</li>
-                <li>• <code className="bg-gray-200 px-2 py-1 rounded">tansiyon</code> (Tansiyon ölçümleri için)</li>
-                <li>• <code className="bg-gray-200 px-2 py-1 rounded">diger_olcumler</code> (Diğer ölçümler için)</li>
-                <li>• <code className="bg-gray-200 px-2 py-1 rounded">sync_kuyruk</code> (Offline sync için)</li>
-              </ul>
-
-              <p><strong>5.3 Başlık Satırlarını Ekle:</strong></p>
-              <p>Her sheet'in A1 hücresine aşağıdaki başlıkları kopyalayın:</p>
-
-              <div className="bg-gray-50 p-4 rounded text-sm">
-                <p><strong>kullanici sheet'i (A1:H1):</strong> kullanici_email | isim | soyisim | cinsiyet | yas | hastaliklar | api_key_area | olusturma_tarihi</p>
-                <p><strong>ilaclar sheet'i (A1:J1):</strong> ilac_id | ilac_adi | doz | birim | zamanlar | stok | foto_url | kullanici_email | aktif | olusturma_tarih</p>
-                <p><strong>ilac_gecmis sheet'i (A1:J1):</strong> kayit_id | ilac_id | tarih | saat | durum | erteleme_dk | not | sync | timestamp</p>
-                <p><strong>Diğer sheet'ler için:</strong> README.md dosyasındaki tabloları inceleyin</p>
+          <div className="border-l-4 border-blue-500 pl-8 bg-blue-50 p-6 rounded-r-lg">
+            <h2 className="text-3xl font-bold text-blue-900 mb-4">📋 Sadece 3 Adım:</h2>
+            <div className="space-y-6">
+              <div className="flex items-start space-x-4">
+                <div className="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-xl">1</div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Şablonu Kopyala</h3>
+                  <p className="text-gray-700">Aşağıdaki butona tıklayarak hazır Google Sheets şablonu kendi Google Drive'ınızda kopyalayın.</p>
+                </div>
               </div>
 
-              <p><strong>5.4 Spreadsheet ID'yi Al:</strong></p>
-              <ul className="ml-6 space-y-1">
-                <li>• URL'den ID kısmını kopyalayın: <code>https://docs.google.com/spreadsheets/d/[ID]/edit</code></li>
-                <li>• Bu ID'yi .env.local dosyasında <code>GOOGLE_SHEETS_SPREADSHEET_ID</code> olarak ayarlayın</li>
-              </ul>
+              <div className="flex items-start space-x-4">
+                <div className="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-xl">2</div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">İsim Verin</h3>
+                  <p className="text-gray-700">"İlaç Takip [İsminiz]" gibi anlamlı bir isim verin.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-4">
+                <div className="bg-purple-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-xl">3</div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">URL'den ID'yi Alın</h3>
+                  <p className="text-gray-700">Google Sheets URL'sinden son kısımdaki ID'yi kopyalayın. (Örnek: /d/[ID]/edit)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Ana kurulum butonu */}
+          <div className="flex justify-center">
+            <div className="bg-white p-8 rounded-xl shadow-lg border-2 border-dashed border-gray-300 max-w-lg w-full text-center">
+              <div className="text-6xl mb-4">📊</div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">Google Sheets Şablonu</h3>
+              <p className="text-gray-600 mb-6">
+                Hazır veri yapılarına sahip şablonu 1 tıkla kopyalayın. Hiç teknik bilgi gerekmiyor!
+              </p>
+              <button
+                onClick={() => {
+                  const templateUrl = 'https://docs.google.com/spreadsheets/d/1EzHGDwKgt--A86w_k90ISrDKlagdeuyU0ryaEmoVOiY/edit?usp=sharing';
+                  window.open(templateUrl, '_blank');
+
+                  setTimeout(() => {
+                    alert('🎉 Şablon yeni sekmede açıldı!\n\n📝 Lütfen:\n1. "Dosya" → "Şablondan kopyala" seçin\n2. "İlaç Takip [İsminiz]" gibi isim verin\n3. Save edin ve URL\'den ID\'yi alın\n\n🏁 Hazır olunca profil doldurabilirsin!');
+                  }, 1500);
+                }}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-lg font-bold text-xl transition-all transform hover:scale-105 shadow-lg"
+              >
+                🚀 Şablonu Kopyala (Ücretsiz!)
+              </button>
+              <p className="text-sm text-gray-500 mt-4">
+                📞 Sorunuz olursa WhatsApp'tan yazın: +90 XYZ
+              </p>
             </div>
           </div>
         </div>
