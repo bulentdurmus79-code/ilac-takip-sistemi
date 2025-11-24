@@ -191,39 +191,39 @@ export default function ProfilPage() {
           </p>
         </header>
 
-        {/* KVKK Compliant System - No API Storage! */}
-        <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white p-6 rounded-lg mb-8">
+        {/* Data Export/Staging System */}
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-lg mb-8">
           <div className="text-center">
-            <div className="text-6xl mb-4">🛡️</div>
-            <h2 className="text-2xl font-bold mb-4">KVKK Uyumlu Güvenli Sistem</h2>
+            <div className="text-5xl mb-4">💾</div>
+            <h2 className="text-2xl font-bold mb-4">Veri Depolama & Dışa Aktarma</h2>
 
             <div className="space-y-4">
               <div className="bg-white bg-opacity-20 p-4 rounded-lg">
-                <h3 className="text-lg font-bold mb-2">✅ VERİLERİNİZ GÜVENLİ!</h3>
+                <h3 className="text-lg font-bold mb-2">📱 OFFLINE-İLK YAKLAŞIM</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center justify-center">
-                    <span className="bg-green-500 text-white px-2 py-1 rounded text-xs mr-2">✓</span>
-                    <span>Hiçbir veri sunucularımızda saklanmıyor</span>
+                    <span className="bg-blue-500 text-white px-2 py-1 rounded text-xs mr-2">📊</span>
+                    <span>İlaç verileri tarayıcınızda güvende</span>
                   </div>
                   <div className="flex items-center justify-center">
-                    <span className="bg-green-500 text-white px-2 py-1 rounded text-xs mr-2">✓</span>
-                    <span>Tüm veriler tarayıcınızda (IndexedDB) kalıyor</span>
+                    <span className="bg-blue-500 text-white px-2 py-1 rounded text-xs mr-2">🔄</span>
+                    <span>Aile üyeleri ile fotoğraf paylaşımı</span>
                   </div>
                   <div className="flex items-center justify-center">
-                    <span className="bg-green-500 text-white px-2 py-1 rounded text-xs mr-2">✓</span>
-                    <span>API credentials merkezde depolanmıyor</span>
+                    <span className="bg-blue-500 text-white px-2 py-1 rounded text-xs mr-2">📤</span>
+                    <span>İsteğe bağlı dışa aktarma</span>
                   </div>
                   <div className="flex items-center justify-center">
-                    <span className="bg-green-500 text-white px-2 py-1 rounded text-xs mr-2">✓</span>
-                    <span>Google hesabınız sadece veri girişi için kullanılıyor</span>
+                    <span className="bg-blue-500 text-white px-2 py-1 rounded text-xs mr-2">🔐</span>
+                    <span>KVKK tam uyumlu - sıfır sunucu depolama</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white text-green-700 p-4 rounded-lg">
+              <div className="bg-white text-indigo-700 p-4 rounded-lg">
                 <div className="text-center">
-                  <p className="font-bold mb-2">🎉 Artık profil bilgilerinizi güvenli şekilde doldurabilirsiniz!</p>
-                  <p className="text-sm"> Veri işleme bilgisi inbox'unuzda (GDPR opt-in) ve tüzüğümüzde açıklanıyor.</p>
+                  <p className="font-bold mb-2">🎉 Modern İlaç Takip Sistemi Aktif!</p>
+                  <p className="text-sm">Verileriniz %100 tarayıcınızda güvenle saklanıyor. İsteğe bağlı dışa aktarma özellikleri yakında eklenecek.</p>
                 </div>
               </div>
             </div>
