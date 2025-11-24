@@ -49,13 +49,18 @@ export async function GET(request: NextRequest) {
 // POST - Profil kaydet/güncelle
 export async function POST(request: NextRequest) {
   try {
+    console.log('🔍 Profil API çağrısı başladı');
+
     const session = await getServerSession(authOptions);
     if (!session || !session.accessToken || !session.user?.email) {
+      console.log('❌ Session validation failed:', { hasSession: !!session, hasToken: !!session?.accessToken, hasEmail: !!session?.user?.email });
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const userEmail = session.user.email;
     const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
+    console.log('📊 Spreadsheet ID:', spreadsheetId ? 'configured' : 'missing');
+
     if (!spreadsheetId) {
       return NextResponse.json({ error: 'Spreadsheet not configured' }, { status: 500 });
     }
@@ -80,9 +85,16 @@ export async function POST(request: NextRequest) {
       targetSpreadsheetId = sheet_id;  // Kullanıcının kendi sheet'i
     }
 
+    console.log('🎯 Target Sheet ID:', targetSpreadsheetId);
+    console.log('👤 User Email:', userEmail);
+
     // Check if profile exists first
+    console.log('📖 Reading sheet data...');
     const profileRows = await sheetsService.readSheet(targetSpreadsheetId, 'kullanici', session.accessToken);
+    console.log('📖 Read completed, rows found:', profileRows?.length);
+
     const existingProfileIndex = profileRows.findIndex((row: string[], index: number) => index > 0 && row[0] === userEmail);
+    console.log('👤 Existing profile index:', existingProfileIndex);
 
     const profileData: KullaniciSheetData = {
       kullanici_email: userEmail,
@@ -114,7 +126,12 @@ export async function POST(request: NextRequest) {
       profileData.olusturma_tarihi,
     ]];
 
+    console.log('📝 Preparing data for append:', data);
+    console.log('ℹ️ Tab name: kullanici, Sheet ID:', targetSpreadsheetId);
+
+    console.log('💾 Starting append operation...');
     await sheetsService.appendToSheet(targetSpreadsheetId, 'kullanici', session.accessToken, data);
+    console.log('✅ Append operation completed!');
 
     // Store in IndexedDB for fast access
     await indexedDBService.addMedicine({
