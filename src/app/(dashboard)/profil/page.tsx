@@ -133,13 +133,12 @@ export default function ProfilPage() {
 
             <button
               onClick={() => {
-                const sharingUrl = 'https://docs.google.com/spreadsheets/d/1EzHGDwKgt--A86w_k90ISrDKlagdeuyU0ryaEmoVOiY/edit?usp=sharing';
-                window.open(sharingUrl, '_blank');
-                alert('✅ Yeni sekmede Google Sheets şablonu açıldı!\n🥷 Şimdi şablonu kendi Gmail hesabınıza kopyalayın.\n🍁 Sonra buraya dönüp profilinizi doldurun.');
+                const copyUrl = 'https://docs.google.com/spreadsheets/d/1EzHGDwKgt--A86w_k90ISrDKlagdeuyU0ryaEmoVOiY/copy';
+                window.open(copyUrl, '_blank');
               }}
               className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-lg font-bold text-lg shadow-xl transition-all hover:scale-105"
             >
-              🚀 Google Sheet Kurulumunu Başlat
+              🚀 Şablonu Kopyala
             </button>
 
             <p className="text-blue-100 text-sm mt-3">
