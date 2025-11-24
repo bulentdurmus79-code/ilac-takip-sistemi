@@ -54,16 +54,24 @@ export default function ProfilPage() {
     setLoading(true);
 
     try {
+      // profile'a sheet_id'yi de ekle
+      const profileWithSheetId = {
+        ...profileData,
+        sheet_id: sheetId, // Kullanıcının kendi sheet ID'si
+      };
+
       const response = await fetch('/api/profil', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(profileData),
+        body: JSON.stringify(profileWithSheetId),
       });
 
       if (!response.ok) {
-        throw new Error('Profil kaydedilirken hata oluştu');
+        // Daha detaylı error message
+        const errorData = await response.json().catch(() => ({ error: 'Bilinmeyen hata' }));
+        throw new Error(errorData.error || 'Profil kaydedilirken hata oluştu');
       }
 
       const result = await response.json();
@@ -72,7 +80,7 @@ export default function ProfilPage() {
 
     } catch (error) {
       console.error('Error:', error);
-      alert('Profil kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.');
+      alert(`Profil kaydedilirken hata oluştu: ${(error as Error).message || 'Lütfen tekrar deneyin.'}`);
     } finally {
       setLoading(false);
     }

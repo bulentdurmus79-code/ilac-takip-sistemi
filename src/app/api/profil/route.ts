@@ -74,8 +74,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'İsim ve soyisim zorunludur' }, { status: 400 });
     }
 
+    // 🆕 EĞER sheet_id varsa kullanıcının kişisel sheet'ini kullan
+    let targetSpreadsheetId = spreadsheetId;
+    if (sheet_id) {
+      targetSpreadsheetId = sheet_id;  // Kullanıcının kendi sheet'i
+    }
+
     // Check if profile exists first
-    const profileRows = await sheetsService.readSheet(spreadsheetId, 'kullanici', session.accessToken);
+    const profileRows = await sheetsService.readSheet(targetSpreadsheetId, 'kullanici', session.accessToken);
     const existingProfileIndex = profileRows.findIndex((row: string[], index: number) => index > 0 && row[0] === userEmail);
 
     const profileData: KullaniciSheetData = {
@@ -108,7 +114,7 @@ export async function POST(request: NextRequest) {
       profileData.olusturma_tarihi,
     ]];
 
-    await sheetsService.appendToSheet(spreadsheetId, 'kullanici', session.accessToken, data);
+    await sheetsService.appendToSheet(targetSpreadsheetId, 'kullanici', session.accessToken, data);
 
     // Store in IndexedDB for fast access
     await indexedDBService.addMedicine({
